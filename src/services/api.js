@@ -1,5 +1,8 @@
 import axios from 'axios';
 
+// NOT: Backend'inin çalıştığı portu buraya yazmalısın.
+// .NET genelde 5000 veya 5169 gibi portlarda çalışır.
+// Eğer swagger'ın "http://localhost:5169/swagger" ise burası 5169 olmalı.
 const API_BASE_URL = 'http://localhost:8000/api';
 
 const api = axios.create({
@@ -10,23 +13,23 @@ const api = axios.create({
 });
 
 const apiService = {
-    // Kullanıcı / Giriş Servisleri
+    // --- Kullanıcı İşlemleri ---
     getUsers: () => api.get('/users'),
     login: (data) => api.post('/auth/login', data),
 
-    // Danışan Listeleme
-    getClients: () => api.get('/clients'),
+    // YENİ EKLENEN: Şifre Değiştirme
+    changePassword: (data) => api.put('/users/change-password', data),
 
-    // Danışan Oluşturma
+    // --- Danışan İşlemleri ---
+    getClients: () => api.get('/clients'),
     createClient: (data) => api.post('/clients', data),
 
-    // Randevu Servisleri
+    // --- Randevu İşlemleri ---
     getAppointments: () => api.get('/appointments'),
     createAppointment: (data) => api.post('/appointments', data),
 
-    // Detaylı bir GET işlemi için
+    // Detay
     getUserById: (id) => api.get(`/users/${id}`),
-
 };
 
 export default apiService;

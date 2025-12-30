@@ -103,10 +103,10 @@ const DashboardLayout = ({ expertName, onLogout, children }) => {
 
             {/* ALT MENÜ (Ayarlar & Çıkış) */}
             <List sx={{ borderTop: 1, borderColor: 'divider' }}>
-                <ListItem disablePadding>
-                    <ListItemButton>
-                        <ListItemIcon sx={{ minWidth: 40 }}><SettingsIcon /></ListItemIcon>
-                        <ListItemText primary="Ayarlar" primaryTypographyProps={{ fontSize: '0.9rem' }} />
+                <ListItem disablePadding sx={{ bgcolor: location.pathname === '/settings' ? '#EDE7F6' : 'inherit', color: location.pathname === '/settings' ? '#673AB7' : 'inherit' }}>
+                    <ListItemButton onClick={() => handleMenuItemClick('/settings')}>
+                        <ListItemIcon sx={{ minWidth: 40, color: 'inherit' }}><SettingsIcon /></ListItemIcon>
+                        <ListItemText primary="Ayarlar" primaryTypographyProps={{ fontSize: '0.9rem', fontWeight: location.pathname === '/settings' ? 600 : 400 }} />
                     </ListItemButton>
                 </ListItem>
                 <ListItem disablePadding>

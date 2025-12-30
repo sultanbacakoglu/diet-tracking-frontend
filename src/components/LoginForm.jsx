@@ -5,14 +5,18 @@ import {
     Alert,
     InputAdornment,
     IconButton,
-    Divider
+    Divider,
+    CircularProgress
 } from '@mui/material';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import PersonOutlineIcon from '@mui/icons-material/PersonOutline';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 
-// import apiService from "../services/api.js"; // API'ye gerek kalmadı
+// ÖNEMLİ: apiService dosyasının yolu doğru olmalı.
+// Dosya yapına göre '../services/apiService' veya './apiService' olabilir.
+import apiService from '../services/api';
+
 import StandardTextField from "./StandardTextField.jsx";
 import StandardButton from "./StandardButton.jsx";
 
@@ -42,15 +46,48 @@ const LoginForm = ({ onLoginSuccess }) => {
         event.preventDefault();
     };
 
-    // 🚨 DEĞİŞİKLİK BURADA: KONTROLSÜZ GİRİŞ
-    const handleSubmit = (e) => {
+    // --- GERÇEK GİRİŞ İŞLEMİ ---
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        
-        // Hiçbir API isteği atmadan, direkt başarılı sayıyoruz.
-        console.log("Giriş Bypass Edildi. İçeri alınıyor...");
-        
-        // "expert" adında bir kullanıcı girmiş gibi davran
-        onLoginSuccess("expert"); 
+
+        // 1. Basit Boş Alan Kontrolü
+        if (!formData.username || !formData.password) {
+            setLoginError("Lütfen kullanıcı adı ve şifreyi giriniz.");
+            return;
+        }
+
+        setLoading(true);
+        setLoginError(null);
+
+        try {
+            // 2. Backend'e İstek Gönder
+            const response = await apiService.login({
+                username: formData.username,
+                password: formData.password
+            });
+
+            // 3. Başarılıysa
+            // Backend'den dönen veriyi al (response.data içinde: { Message, Username, Role, UserId ... })
+            const data = response.data;
+            console.log("Giriş Başarılı:", data);
+
+            // Kullanıcı bilgilerini tarayıcıya kaydet (Ayarlar sayfasında kullanmak için)
+            localStorage.setItem('username', data.username || formData.username);
+            localStorage.setItem('role', data.role);
+            localStorage.setItem('userId', data.userId);
+
+            // Ana sayfaya yönlendir (App.js'deki fonksiyonu tetikle)
+            onLoginSuccess(data.username);
+
+        } catch (error) {
+            console.error("Giriş Hatası:", error);
+            // Backend'den gelen hata mesajını göster
+            // Backend "Unauthorized" dönerse error.response.data.message içinde mesaj olur.
+            const errorMessage = error.response?.data?.message || error.response?.data?.Message || "Giriş başarısız. Bilgilerinizi kontrol edin.";
+            setLoginError(errorMessage);
+        } finally {
+            setLoading(false);
+        }
     };
 
     return (
@@ -107,6 +144,7 @@ const LoginForm = ({ onLoginSuccess }) => {
                     Giriş Yap
                 </Typography>
                 <Typography variant="body1" color="text.secondary" sx={{ mb: 3 }}>
+                    Devam etmek için hesabınıza giriş yapın.
                 </Typography>
 
                 {loginError && <Alert severity="error" sx={{ mb: 2 }}>{loginError}</Alert>}
@@ -118,6 +156,7 @@ const LoginForm = ({ onLoginSuccess }) => {
                         name="username"
                         value={formData.username}
                         onChange={handleChange}
+                        disabled={loading} // Yüklenirken engelle
                         InputProps={{
                             startAdornment: (<InputAdornment position="start"><PersonOutlineIcon color="action" /></InputAdornment>),
                         }}
@@ -129,7 +168,7 @@ const LoginForm = ({ onLoginSuccess }) => {
                         type={showPassword ? 'text' : 'password'}
                         value={formData.password}
                         onChange={handleChange}
-                        // required
+                        disabled={loading} // Yüklenirken engelle
                         InputProps={{
                             startAdornment: (<InputAdornment position="start"><LockOutlinedIcon color="action" /></InputAdornment>),
                             endAdornment: (
@@ -154,11 +193,15 @@ const LoginForm = ({ onLoginSuccess }) => {
                         color="inherit"
                         disabled={loading}
                     >
-                        Giriş Yap 
+                        {loading ? <CircularProgress size={24} color="inherit" /> : "Giriş Yap"}
                     </StandardButton>
                 </Box>
 
                 <Divider sx={{ my: 3 }} />
+
+                <Typography variant="caption" color="text.secondary" align="center">
+                    Giriş bilgilerinizi unuttuysanız sistem yöneticisine başvurunuz.
+                </Typography>
             </Box>
         </Box>
     );

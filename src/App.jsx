@@ -1,11 +1,14 @@
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route, useNavigate } from 'react-router-dom'; 
+import { BrowserRouter as Router, Routes, Route, useNavigate } from 'react-router-dom';
 import { Typography, Box } from '@mui/material';
 
 import DashboardLayout from './components/DashboardLayout';
 import ClientPage from './pages/ClientPage';
+import AppointmentPage from './pages/AppointmentPage';
+import SettingsPage from './pages/SettingsPage'; // <-- YENİ İMPORT
 import LoginForm from './components/LoginForm';
 
+// MockPage hala diğer (Raporlar, İletişim vb.) sayfalar için gerekli
 const MockPage = ({ title }) => (
     <Box sx={{ p: 4, textAlign: 'center', color: 'text.secondary' }}>
         <Typography variant="h4" sx={{ fontWeight: 'bold', color: '#382aae', mb: 2 }}>{title}</Typography>
@@ -14,7 +17,7 @@ const MockPage = ({ title }) => (
 );
 
 const LoginPage = () => {
-    const navigate = useNavigate(); 
+    const navigate = useNavigate();
 
     const handleLoginSuccess = () => {
         console.log("Giriş Sinyali Alındı -> Yönlendiriliyor...");
@@ -40,7 +43,7 @@ function App() {
             <Routes>
                 <Route path="/" element={<LoginPage />} />
                 <Route path="/login" element={<LoginPage />} />
-                
+
                 <Route path="/clients" element={
                     <DashboardLayout expertName="Dr. Expert" onLogout={handleLogout}>
                         <ClientPage />
@@ -49,7 +52,14 @@ function App() {
 
                 <Route path="/appointments" element={
                     <DashboardLayout expertName="Dr. Expert" onLogout={handleLogout}>
-                        <MockPage title="Randevular" />
+                        <AppointmentPage />
+                    </DashboardLayout>
+                } />
+
+                {/* YENİ EKLENEN ROTA: Ayarlar Sayfası */}
+                <Route path="/settings" element={
+                    <DashboardLayout expertName="Dr. Expert" onLogout={handleLogout}>
+                        <SettingsPage />
                     </DashboardLayout>
                 } />
 
@@ -70,7 +80,7 @@ function App() {
                         <MockPage title="İletişim" />
                     </DashboardLayout>
                 } />
-                
+
                 <Route path="*" element={<LoginPage />} />
 
             </Routes>
