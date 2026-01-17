@@ -21,11 +21,12 @@ import NotificationsIcon from '@mui/icons-material/Notifications';
 import LogoutIcon from '@mui/icons-material/Logout';
 import PeopleIcon from '@mui/icons-material/People';
 import EventNoteIcon from '@mui/icons-material/EventNote';
-import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
-import AssessmentIcon from '@mui/icons-material/Assessment';
-import PhoneIcon from '@mui/icons-material/Phone';
 import SettingsIcon from '@mui/icons-material/Settings';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
+import RestaurantMenuIcon from '@mui/icons-material/RestaurantMenu';
+
+// EKSİK OLAN IMPORT BURADAYDI:
+import AssessmentIcon from '@mui/icons-material/Assessment';
 
 const BG_COLOR = '#f9fafb';
 const PRIMARY_COLOR = '#382aae';
@@ -56,10 +57,10 @@ const DashboardLayout = ({ expertName, onLogout, children }) => {
 
     const sidebarItems = [
         { text: 'Randevular', icon: <EventNoteIcon />, path: '/appointments' },
-        { text: 'Hasta Ekle', icon: <AddCircleOutlineIcon />, path: '/clients/add' },
+        { text: 'Diyet Yaz', icon: <RestaurantMenuIcon />, path: '/diet-write' },
+        // "Diyet Listeleri" menüsü için AssessmentIcon kullanıyoruz
+        { text: 'Diyet Listeleri', icon: <AssessmentIcon />, path: '/diet-lists' },
         { text: 'Hasta Listesi', icon: <PeopleIcon />, path: '/clients' },
-        { text: 'Raporlar', icon: <AssessmentIcon />, path: '/reports' },
-        { text: 'İletişim', icon: <PhoneIcon />, path: '/contact' },
     ];
 
     const drawer = (
@@ -122,21 +123,15 @@ const DashboardLayout = ({ expertName, onLogout, children }) => {
     return (
         <Box sx={{ display: 'flex' }}>
             <CssBaseline />
-
-            {/* ÜST BAR (AppBar) */}
             <AppBar position="fixed" elevation={0} sx={{ width: { sm: `calc(100% - ${DRAWER_WIDTH}px)` }, ml: { sm: `${DRAWER_WIDTH}px` }, bgcolor: 'white', color: 'text.primary', borderBottom: 1, borderColor: 'divider' }}>
                 <Toolbar sx={{ minHeight: HEADER_HEIGHT, height: HEADER_HEIGHT }}>
                     <IconButton color="inherit" aria-label="open drawer" edge="start" onClick={handleDrawerToggle} sx={{ mr: 2, display: { sm: 'none' } }}><MenuIcon /></IconButton>
-
                     <Box sx={{ flexGrow: 1 }} />
-
                     <Box sx={{ display: 'flex', alignItems: 'center' }}>
                         <IconButton size="medium" color="inherit" sx={{ color: '#64748b' }}>
                             <Badge badgeContent={4} color="error"><NotificationsIcon /></Badge>
                         </IconButton>
-
                         <Divider orientation="vertical" flexItem sx={{ mx: 2, height: 24, alignSelf: 'center' }} />
-
                         <Box sx={{ display: 'flex', alignItems: 'center', cursor: 'pointer' }}>
                             <Typography variant="body2" sx={{ mr: 1.5, fontWeight: 600, color: '#334155' }}>{expertName}</Typography>
                             <Box sx={{ bgcolor: PRIMARY_COLOR, color: 'white', width: 36, height: 36, borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '1rem', boxShadow: '0 2px 5px rgba(56, 42, 174, 0.2)' }}>
@@ -146,14 +141,10 @@ const DashboardLayout = ({ expertName, onLogout, children }) => {
                     </Box>
                 </Toolbar>
             </AppBar>
-
-            {/* SIDEBAR */}
             <Box component="nav" sx={{ width: { sm: DRAWER_WIDTH }, flexShrink: { sm: 0 } }}>
                 <Drawer variant="temporary" open={mobileOpen} onClose={handleDrawerToggle} ModalProps={{ keepMounted: true }} sx={{ display: { xs: 'block', sm: 'none' }, '& .MuiDrawer-paper': { boxSizing: 'border-box', width: DRAWER_WIDTH } }}>{drawer}</Drawer>
                 <Drawer variant="permanent" sx={{ display: { xs: 'none', sm: 'block' }, '& .MuiDrawer-paper': { boxSizing: 'border-box', width: DRAWER_WIDTH, borderRight: 1, borderColor: 'divider' } }} open>{drawer}</Drawer>
             </Box>
-
-            {/* ANA İÇERİK */}
             <Box component="main" sx={{ flexGrow: 1, p: 3, width: { sm: `calc(100% - ${DRAWER_WIDTH}px)` }, minHeight: '100vh', bgcolor: BG_COLOR }}>
                 <Toolbar sx={{ minHeight: HEADER_HEIGHT, height: HEADER_HEIGHT }} />
                 {children}

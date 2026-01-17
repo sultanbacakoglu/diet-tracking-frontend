@@ -1,8 +1,5 @@
 import axios from 'axios';
 
-// NOT: Backend'inin çalıştığı portu buraya yazmalısın.
-// .NET genelde 5000 veya 5169 gibi portlarda çalışır.
-// Eğer swagger'ın "http://localhost:5169/swagger" ise burası 5169 olmalı.
 const API_BASE_URL = 'http://localhost:8000/api';
 
 const api = axios.create({
@@ -13,14 +10,13 @@ const api = axios.create({
 });
 
 const apiService = {
-    // --- Kullanıcı İşlemleri ---
+    // --- Kullanıcı / Auth İşlemleri ---
     getUsers: () => api.get('/users'),
     login: (data) => api.post('/auth/login', data),
-
-    // YENİ EKLENEN: Şifre Değiştirme
     changePassword: (data) => api.put('/users/change-password', data),
+    getUserById: (id) => api.get(`/users/${id}`),
 
-    // --- Danışan İşlemleri ---
+    // --- Danışan (Client) İşlemleri ---
     getClients: () => api.get('/clients'),
     createClient: (data) => api.post('/clients', data),
 
@@ -28,8 +24,18 @@ const apiService = {
     getAppointments: () => api.get('/appointments'),
     createAppointment: (data) => api.post('/appointments', data),
 
-    // Detay
-    getUserById: (id) => api.get(`/users/${id}`),
+    // --- Diyet Listesi İşlemleri (YENİ EKLENENLER) ---
+    // 1. Yeni liste oluşturma
+    createDietList: (data) => api.post('/dietlists', data),
+
+    // 2. Bir danışana ait listeleri getirme
+    getDietListsByClient: (clientId) => api.get(`/dietlists/client/${clientId}`),
+
+    // 3. Tek bir listenin detayını getirme (Görüntüleme ekranı için)
+    getDietListById: (id) => api.get(`/dietlists/${id}`),
+
+    // 4. (Opsiyonel) Sistemdeki tüm listeleri getirme
+    getDietLists: () => api.get('/dietlists'),
 };
 
 export default apiService;

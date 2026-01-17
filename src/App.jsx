@@ -5,10 +5,13 @@ import { Typography, Box } from '@mui/material';
 import DashboardLayout from './components/DashboardLayout';
 import ClientPage from './pages/ClientPage';
 import AppointmentPage from './pages/AppointmentPage';
-import SettingsPage from './pages/SettingsPage'; // <-- YENİ İMPORT
+import SettingsPage from './pages/SettingsPage';
 import LoginForm from './components/LoginForm';
 
-// MockPage hala diğer (Raporlar, İletişim vb.) sayfalar için gerekli
+import DietWritePage from './pages/DietWritePage';
+// YENİ EKLENEN IMPORT:
+import DietListsPage from './pages/DietListsPage';
+
 const MockPage = ({ title }) => (
     <Box sx={{ p: 4, textAlign: 'center', color: 'text.secondary' }}>
         <Typography variant="h4" sx={{ fontWeight: 'bold', color: '#382aae', mb: 2 }}>{title}</Typography>
@@ -34,15 +37,22 @@ const LoginPage = () => {
 function App() {
 
     const handleLogout = () => {
+        // Çıkış yapıldığında LocalStorage temizleniyor
         localStorage.removeItem('userToken');
+        localStorage.removeItem('username');
+        localStorage.removeItem('role');
+        localStorage.removeItem('userId');
         console.log("Kullanıcı çıkış yaptı.");
     };
 
     return (
         <Router>
             <Routes>
+                {/* Giriş Sayfaları */}
                 <Route path="/" element={<LoginPage />} />
                 <Route path="/login" element={<LoginPage />} />
+
+                {/* --- ANA SAYFALAR --- */}
 
                 <Route path="/clients" element={
                     <DashboardLayout expertName="Dr. Expert" onLogout={handleLogout}>
@@ -56,12 +66,26 @@ function App() {
                     </DashboardLayout>
                 } />
 
-                {/* YENİ EKLENEN ROTA: Ayarlar Sayfası */}
+                <Route path="/diet-write" element={
+                    <DashboardLayout expertName="Dr. Expert" onLogout={handleLogout}>
+                        <DietWritePage />
+                    </DashboardLayout>
+                } />
+
+                {/* YENİ EKLENEN ROTA: Diyet Listeleri Tablosu */}
+                <Route path="/diet-lists" element={
+                    <DashboardLayout expertName="Dr. Expert" onLogout={handleLogout}>
+                        <DietListsPage />
+                    </DashboardLayout>
+                } />
+
                 <Route path="/settings" element={
                     <DashboardLayout expertName="Dr. Expert" onLogout={handleLogout}>
                         <SettingsPage />
                     </DashboardLayout>
                 } />
+
+                {/* --- YAPIM AŞAMASINDAKİ SAYFALAR (Mock) --- */}
 
                 <Route path="/clients/add" element={
                     <DashboardLayout expertName="Dr. Expert" onLogout={handleLogout}>
@@ -81,6 +105,7 @@ function App() {
                     </DashboardLayout>
                 } />
 
+                {/* Hatalı URL girilirse Login'e at */}
                 <Route path="*" element={<LoginPage />} />
 
             </Routes>
